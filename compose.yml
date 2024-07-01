@@ -21,9 +21,19 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      DATABASE_URL: postgres://entdemo:password@db:5432/entdemo
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: entdemo
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: entdemo
     depends_on:
       db:
         condition: service_healthy
+    develop:
+      watch:
+        - path: ./
+          action: sync+restart
+          target: /src
+          ignore: [ "main", "entdemo" ]
     ports:
       - "1323:1323"
