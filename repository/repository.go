@@ -55,11 +55,11 @@ type Repository struct {
 	c *ent.Client
 }
 
-func New(client *ent.Client) Repository {
-	return Repository{client}
+func New(client *ent.Client) *Repository {
+	return &Repository{client}
 }
 
-func Connect(c *DbConfig) (Repository, error) {
+func Connect(c *DbConfig) (*Repository, error) {
 	client, err := ent.Open("postgres", c.DSN())
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
