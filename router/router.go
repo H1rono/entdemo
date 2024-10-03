@@ -14,5 +14,10 @@ func New(repo *repository.Repository) *Router {
 }
 
 func (r *Router) SetupRoutes(e *echo.Echo) {
-	e.GET("/ping", r.Ping)
+	root := e.Group("/api")
+	root.GET("/ping", r.Ping)
+	{
+		users := root.Group("/users")
+		r.SetupUserRoutes(users)
+	}
 }
