@@ -10,9 +10,9 @@ type CreateUser struct {
 type UpdateUser = CreateUser
 
 type User struct {
-	ID   int    `json:"id"`
-	Age  int    `json:"age"`
-	Name string `json:"name"`
+	ID   int
+	Age  int
+	Name string
 }
 
 func (r *Repository) CreateUser(ctx context.Context, u *CreateUser) (*User, error) {
