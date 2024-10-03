@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/H1rono/entdemo/repository"
@@ -18,6 +19,10 @@ func main() {
 	repo, err := repository.Connect(dbConfig)
 	if err != nil {
 		log.Fatalf("failed connecting to database: %v", err)
+	}
+	defer repo.Close()
+	if err := repo.Migrate(context.Background()); err != nil {
+		log.Fatalf("failed running migrations: %v", err)
 	}
 	e := echo.New()
 	r := router.New(repo)
