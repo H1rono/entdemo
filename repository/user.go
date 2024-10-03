@@ -7,6 +7,8 @@ type CreateUser struct {
 	Name string
 }
 
+type UpdateUser = CreateUser
+
 type User struct {
 	ID   int    `json:"id"`
 	Age  int    `json:"age"`
@@ -58,4 +60,19 @@ func (r *Repository) GetUser(ctx context.Context, id int) (*User, error) {
 
 func (r *Repository) DeleteUser(ctx context.Context, id int) error {
 	return r.c.User.DeleteOneID(id).Exec(ctx)
+}
+
+func (r *Repository) UpdateUser(ctx context.Context, id int, u *UpdateUser) (*User, error) {
+	res, err := r.c.User.UpdateOneID(id).
+		SetAge(u.Age).
+		SetName(u.Name).
+		Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &User{
+		ID:   res.ID,
+		Age:  res.Age,
+		Name: res.Name,
+	}, nil
 }
