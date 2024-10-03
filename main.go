@@ -6,6 +6,8 @@ import (
 	"github.com/H1rono/entdemo/repository"
 	"github.com/H1rono/entdemo/router"
 	"github.com/labstack/echo/v4"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {
