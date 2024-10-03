@@ -27,3 +27,35 @@ func (r *Repository) CreateUser(ctx context.Context, u *CreateUser) (*User, erro
 		Name: res.Name,
 	}, nil
 }
+
+func (r *Repository) GetUsers(ctx context.Context) ([]*User, error) {
+	users, err := r.c.User.Query().All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	res := make([]*User, 0, len(users))
+	for _, u := range users {
+		res = append(res, &User{
+			ID:   u.ID,
+			Age:  u.Age,
+			Name: u.Name,
+		})
+	}
+	return res, nil
+}
+
+func (r *Repository) GetUser(ctx context.Context, id int) (*User, error) {
+	u, err := r.c.User.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return &User{
+		ID:   u.ID,
+		Age:  u.Age,
+		Name: u.Name,
+	}, nil
+}
+
+func (r *Repository) DeleteUser(ctx context.Context, id int) error {
+	return r.c.User.DeleteOneID(id).Exec(ctx)
+}
