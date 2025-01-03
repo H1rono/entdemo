@@ -2,7 +2,6 @@ package router
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 
@@ -86,17 +85,17 @@ func (r *Router) getUser(c echo.Context) error {
 }
 
 func (r *Router) updateUser(c echo.Context) error {
-	// ここ struct { paramUserId; requestBodyUser } にすると、paramUserId がデフォルト値になる
-	paramId := c.Param("id")
-	id, err := strconv.Atoi(paramId)
-	if err != nil {
+	binder := &echo.DefaultBinder{}
+	var param paramUserId
+	var body requestBodyUser
+	if err := binder.BindPathParams(c, &param); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
-	body := requestBodyUser{}
-	if err := c.Bind(&body); err != nil {
+	if err := binder.BindBody(c, &body); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
-	user, err := r.r.UpdateUser(c.Request().Context(), id, &repository.UpdateUser{
+	ctx := c.Request().Context()
+	user, err := r.r.UpdateUser(ctx, param.ID, &repository.UpdateUser{
 		Age:  body.Age,
 		Name: body.Name,
 	})
