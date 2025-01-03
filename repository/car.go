@@ -3,6 +3,8 @@ package repository
 import (
 	"context"
 	"time"
+
+	"github.com/H1rono/entdemo/ent"
 )
 
 type CreateCar struct {
@@ -16,6 +18,14 @@ type Car struct {
 	RegisteredAt time.Time
 }
 
+func fromEntCar(car *ent.Car) *Car {
+	return &Car{
+		ID:           car.ID,
+		Model:        car.Model,
+		RegisteredAt: car.RegisteredAt,
+	}
+}
+
 func (r *Repository) CreateCar(ctx context.Context, car *CreateCar) (*Car, error) {
 	res, err := r.c.Car.
 		Create().
@@ -25,11 +35,7 @@ func (r *Repository) CreateCar(ctx context.Context, car *CreateCar) (*Car, error
 	if err != nil {
 		return nil, err
 	}
-	return &Car{
-		ID:           res.ID,
-		Model:        res.Model,
-		RegisteredAt: res.RegisteredAt,
-	}, nil
+	return fromEntCar(res), nil
 }
 
 func (r *Repository) GetCars(ctx context.Context) ([]*Car, error) {
@@ -39,11 +45,7 @@ func (r *Repository) GetCars(ctx context.Context) ([]*Car, error) {
 	}
 	cars := make([]*Car, 0, len(res))
 	for _, car := range res {
-		cars = append(cars, &Car{
-			ID:           car.ID,
-			Model:        car.Model,
-			RegisteredAt: car.RegisteredAt,
-		})
+		cars = append(cars, fromEntCar(car))
 	}
 	return cars, nil
 }
@@ -53,11 +55,7 @@ func (r *Repository) GetCar(ctx context.Context, id int) (*Car, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Car{
-		ID:           res.ID,
-		Model:        res.Model,
-		RegisteredAt: res.RegisteredAt,
-	}, nil
+	return fromEntCar(res), nil
 }
 
 func (r *Repository) UpdateCar(ctx context.Context, id int, car *CreateCar) (*Car, error) {
@@ -68,11 +66,7 @@ func (r *Repository) UpdateCar(ctx context.Context, id int, car *CreateCar) (*Ca
 	if err != nil {
 		return nil, err
 	}
-	return &Car{
-		ID:           res.ID,
-		Model:        res.Model,
-		RegisteredAt: res.RegisteredAt,
-	}, nil
+	return fromEntCar(res), nil
 }
 
 func (r *Repository) DeleteCar(ctx context.Context, id int) error {

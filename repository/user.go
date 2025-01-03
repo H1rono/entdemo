@@ -1,6 +1,10 @@
 package repository
 
-import "context"
+import (
+	"context"
+
+	"github.com/H1rono/entdemo/ent"
+)
 
 type CreateUser struct {
 	Age  int
@@ -15,6 +19,14 @@ type User struct {
 	Name string
 }
 
+func fromEntUser(u *ent.User) *User {
+	return &User{
+		ID:   u.ID,
+		Age:  u.Age,
+		Name: u.Name,
+	}
+}
+
 func (r *Repository) CreateUser(ctx context.Context, u *CreateUser) (*User, error) {
 	res, err := r.c.User.Create().
 		SetAge(u.Age).
@@ -23,11 +35,7 @@ func (r *Repository) CreateUser(ctx context.Context, u *CreateUser) (*User, erro
 	if err != nil {
 		return nil, err
 	}
-	return &User{
-		ID:   res.ID,
-		Age:  res.Age,
-		Name: res.Name,
-	}, nil
+	return fromEntUser(res), nil
 }
 
 func (r *Repository) GetUsers(ctx context.Context) ([]*User, error) {
@@ -37,11 +45,7 @@ func (r *Repository) GetUsers(ctx context.Context) ([]*User, error) {
 	}
 	res := make([]*User, 0, len(users))
 	for _, u := range users {
-		res = append(res, &User{
-			ID:   u.ID,
-			Age:  u.Age,
-			Name: u.Name,
-		})
+		res = append(res, fromEntUser(u))
 	}
 	return res, nil
 }
@@ -51,11 +55,7 @@ func (r *Repository) GetUser(ctx context.Context, id int) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &User{
-		ID:   u.ID,
-		Age:  u.Age,
-		Name: u.Name,
-	}, nil
+	return fromEntUser(u), nil
 }
 
 func (r *Repository) DeleteUser(ctx context.Context, id int) error {
@@ -70,9 +70,5 @@ func (r *Repository) UpdateUser(ctx context.Context, id int, u *UpdateUser) (*Us
 	if err != nil {
 		return nil, err
 	}
-	return &User{
-		ID:   res.ID,
-		Age:  res.Age,
-		Name: res.Name,
-	}, nil
+	return fromEntUser(res), nil
 }
