@@ -17,7 +17,7 @@ services:
       - "5432"
 
   dbgate:
-    image: "dbgate/dbgate:5.5.3"
+    image: "dbgate/dbgate:6.1.2"
     restart: always
     environment:
       - CONNECTIONS=db
