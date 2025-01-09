@@ -20,4 +20,8 @@ func (r *Router) SetupRoutes(e *echo.Echo) {
 		users := root.Group("/users")
 		r.SetupUserRoutes(users)
 	}
+	{
+		cars := root.Group("/cars")
+		r.SetupCarRoutes(cars)
+	}
 }
